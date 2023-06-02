@@ -12,10 +12,13 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.layout.VBox;
@@ -45,8 +48,8 @@ public class Main extends Application {
     Label playingFrom = new Label("Playing from: ");
     Slider progressSlider = new Slider();
     Playlist selectedPlaylist;
-    Button next = new Button("Next");
-    Button prev = new Button("Previous");
+    Button next = new Button();
+    Button prev = new Button();
 
     public static void main(String[] args) {
         launch(args);
@@ -140,6 +143,10 @@ public class Main extends Application {
         column1.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         column2.setCellValueFactory(cellData -> cellData.getValue().artistNameProperty());
         column3.setCellValueFactory(cellData -> cellData.getValue().songPathProperty());
+
+        column1.setStyle("-fx-background-color: #667080;");
+        column2.setStyle("-fx-background-color: #667080;");
+        column3.setStyle("-fx-background-color: #667080;");
 
         playlistSongs.getColumns().addAll(column1, column2, column3);
         playlistSongs.setItems(selectedPlaylist.getPlaylistContent());
@@ -237,6 +244,10 @@ public class Main extends Application {
         column2.setCellValueFactory(cellData -> cellData.getValue().artistNameProperty());
         column3.setCellValueFactory(cellData -> cellData.getValue().songPathProperty());
 
+        column1.setStyle("-fx-background-color: #667080;");
+        column2.setStyle("-fx-background-color: #667080;");
+        column3.setStyle("-fx-background-color: #667080;");
+
         libraryToPlaylist.getColumns().addAll(column1, column2, column3);
         libraryToPlaylist.setItems(musicDB.getMusicList());
 
@@ -269,21 +280,56 @@ public class Main extends Application {
         Scene scene = new Scene(root, 1000, 1000);
 
         //Texts and buttons
-        Text welcome = new Text("Welcome to MyTune");
-        welcome.setFont(Font.font("Arial", 50));
+        vBox.setStyle("-fx-background-color: #C4DFDF; ");
+        vBox.setPrefSize(2000, 1000);
+
+        ImageView imageView = new ImageView();
+        String imagePath = "/images/logo.png";
+        Image image = new Image(imagePath);
+        imageView.setImage(image);
+        imageView.setFitWidth(500);
+        imageView.setFitHeight(500);
+
         Button viewLibrary = new Button("View Library");
+        viewLibrary.setTextFill(Color.WHITE);
+        viewLibrary.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        viewLibrary.setOnMouseEntered(e -> {
+            viewLibrary.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");});
+        viewLibrary.setOnMouseExited(e -> {
+            viewLibrary.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
         viewLibrary.setOnAction(event -> musicLibrary());
+
         Button viewPlaylist = new Button("View Playlist");
+        viewPlaylist.setTextFill(Color.WHITE);
+        viewPlaylist.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        viewPlaylist.setOnMouseEntered(e -> {
+            viewPlaylist.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");});
+        viewPlaylist.setOnMouseExited(e -> {
+            viewPlaylist.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
         viewPlaylist.setOnAction(e -> playListChoiceBox());
+
         Button exit = new Button("Exit");
+        exit.setTextFill(Color.WHITE);
+        exit.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        exit.setOnMouseEntered(e -> {
+            exit.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");});
+        exit.setOnMouseExited(e -> {
+            exit.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
         exit.setOnAction(e -> System.exit(0));
         exit.prefWidthProperty().bind(viewPlaylist.widthProperty());
 
+        HBox hBox = new HBox(viewLibrary, viewPlaylist);
+        hBox.setSpacing(10);
+        hBox.setAlignment(Pos.CENTER);
+
         //Tambah ke box
-        vBox.getChildren().addAll(welcome, viewLibrary, viewPlaylist, exit);
+        vBox.getChildren().addAll(imageView, hBox, exit);
 
         //set mainStage icon and title
-        Image icon = new Image("file:src/main/resources/music.png");
+        Image icon = new Image("file:src/main/resources/logo.png");
         mainStage.getIcons().add(icon);
         mainStage.setTitle("MyTune");
 
@@ -298,6 +344,7 @@ public class Main extends Application {
 
         mainStage.setScene(scene);
         //mainStage.setResizable(false);
+        mainStage.setFullScreen(true);
         mainStage.show();
 
     }
@@ -317,17 +364,110 @@ public class Main extends Application {
         progressSlider.setValue(0);
         progressSlider.setPrefWidth(300);
 
-        Button back = new Button("<- Back");
+        rightSide.setStyle("-fx-background-color: #C4DFDF; ");
+        borderPane.setStyle("-fx-background-color: #C4DFDF; ");
+
+        Button back = new Button();
+        ImageView imageView = new ImageView();
+        Image image = new Image("/images/back.png");
+        imageView.setImage(image);
+        imageView.setFitWidth(10);
+        imageView.setFitHeight(10);
+        back.setGraphic(imageView);
+        Circle shape = new Circle(180);
+        back.setShape(shape);
+        back.setTextFill(Color.WHITE);
+        back.setStyle("-fx-background-color: #667080; -fx-font-weight: bold;  ");
+        back.setOnMouseEntered(e -> {
+            back.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        back.setOnMouseExited(e -> {
+            back.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
         back.setOnAction(event -> mainMenu());
 
-        Button playPause = new Button("Play / Pause");
+        Button playPause = new Button();
+        ImageView playpos = new ImageView();
+        Image play = new Image("/images/play.png");
+        Image pause = new Image("/images/pause.png");
+        playpos.setImage(play);
+        playpos.setFitWidth(20);
+        playpos.setFitHeight(20);
+        playPause.setGraphic(playpos);
+        Circle shape1 = new Circle(180);
+        playPause.setShape(shape1);
+        playPause.setTextFill(Color.WHITE);
+        playPause.setStyle("-fx-background-color: #667080; -fx-font-weight: bold;  ");
         playPause.setOnAction(e -> {
             musicPlayer.playPause();
         });
 
+        Circle shapeNext = new Circle(180);
+        next.setShape(shapeNext);
+        ImageView nextIcon = new ImageView();
+        Image logo3 = new Image("/images/next.png");
+        nextIcon.setImage(logo3);
+        nextIcon.setFitWidth(10);
+        nextIcon.setFitHeight(10);
+        next.setGraphic(nextIcon);
+        next.setTextFill(Color.WHITE);
+        next.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; ");
+        next.setOnMouseEntered(e -> {
+            next.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        next.setOnMouseExited(e -> {
+            next.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+
+        Circle shapePrev = new Circle(180);
+        prev.setShape(shapePrev);
+        ImageView prevIcon = new ImageView();
+        Image logo4 = new Image("/images/previous.png");
+        prevIcon.setImage(logo4);
+        prevIcon.setFitWidth(10);
+        prevIcon.setFitHeight(10);
+        prev.setGraphic(prevIcon);
+        prev.setTextFill(Color.WHITE);
+        prev.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; ");
+        prev.setOnMouseEntered(e -> {
+            prev.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        prev.setOnMouseExited(e -> {
+            prev.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+
         Button add = new Button("Add");
+        ImageView addIcon = new ImageView();
+        Image icon1 = new Image("/images/add.png");
+        addIcon.setImage(icon1);
+        addIcon.setFitWidth(10);
+        addIcon.setFitHeight(10);
+        add.setGraphic(addIcon);
+        add.setTextFill(Color.WHITE);
+        add.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; ");
+        add.setOnMouseEntered(e -> {
+            add.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        add.setOnMouseExited(e -> {
+            add.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
         add.setOnAction(e -> showAddMusicDialog());
+
         Button delete = new Button("Delete");
+        ImageView deleteIcon = new ImageView();
+        Image icon2 = new Image("/images/delete.png");
+        deleteIcon.setImage(icon2);
+        deleteIcon.setFitWidth(20);
+        deleteIcon.setFitHeight(20);
+        delete.setGraphic(deleteIcon);
+        delete.setTextFill(Color.WHITE);
+        delete.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; ");
+        delete.setOnMouseEntered(e -> {
+            delete.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        delete.setOnMouseExited(e -> {
+            delete.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
 
         //tambah music ke TableView
         librarySongs.getColumns().clear();//clear agar tidak double
@@ -337,6 +477,11 @@ public class Main extends Application {
         column1.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         column2.setCellValueFactory(cellData -> cellData.getValue().artistNameProperty());
         column3.setCellValueFactory(cellData -> cellData.getValue().songPathProperty());
+
+        column1.setStyle("-fx-background-color: #667080;");
+        //column1.setTextFill(Color.WHITE);
+        column2.setStyle("-fx-background-color: #667080;");
+        column3.setStyle("-fx-background-color: #667080;");
 
         librarySongs.getColumns().addAll(column1, column2, column3);
         librarySongs.setItems(musicDB.getMusicList());
@@ -361,6 +506,7 @@ public class Main extends Application {
 
         mainStage.setScene(scene);
         //mainStage.setResizable(false);
+        mainStage.setFullScreen(true);
         mainStage.show();
 
 
@@ -513,6 +659,10 @@ public class Main extends Application {
 
     private void showAddMusicDialog() {
         // Pop up window saat klik add
+        VBox vBox = new VBox();
+        vBox.setStyle("-fx-background-color: #C4DFDF; ");
+        vBox.setPrefSize(2000, 1000);
+
         Dialog<Music> dialog = new Dialog<>();
         dialog.setTitle("Add Music");
         dialog.setHeaderText("Enter the details for the new music");
