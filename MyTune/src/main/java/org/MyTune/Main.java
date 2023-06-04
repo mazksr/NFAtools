@@ -14,14 +14,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.layout.VBox;
 import javafx.geometry.Pos;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -48,18 +45,36 @@ public class Main extends Application {
     Label playingFrom = new Label("Playing from: ");
     Slider progressSlider = new Slider();
     Playlist selectedPlaylist;
-    Button next = new Button();
-    Button prev = new Button();
+    Button next = new Button("Next");
+    Button prev = new Button("Previous");
 
     public static void main(String[] args) {
         launch(args);
     }
 
     public void playListChoiceBox() {
+        ImageView imageView1 = new ImageView();
+        String imagePath = "/images/logo.png";
+        Image image1 = new Image(imagePath);
+        imageView1.setImage(image1);
+        imageView1.setFitWidth(500);
+        imageView1.setFitHeight(500);
+        imageView1.setOpacity(0.5);
+
         VBox playlistBox = new VBox();
         ChoiceBox<String> playlistChoiceBox = new ChoiceBox<>();
+        playlistChoiceBox.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        playlistChoiceBox.setOnMouseEntered(e -> {
+            playlistChoiceBox.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");});
+        playlistChoiceBox.setOnMouseExited(e -> {
+            playlistChoiceBox.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+
+        playlistBox.setPrefSize(900, 900);
+        playlistChoiceBox.setMinWidth(200);
+
         playlistBox.setAlignment(Pos.CENTER);
-        playlistBox.setSpacing(10);
+        playlistBox.setSpacing(75);
 
         for (int i = 0; i < musicDB.getPlaylist().size(); i++) {
             playlistChoiceBox.getItems().add(musicDB.getPlaylist().get(i).getPlaylistName());
@@ -72,16 +87,111 @@ public class Main extends Application {
             }
         });
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(playlistBox);
+        StackPane stackPane = new StackPane();
 
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(stackPane);
+        borderPane.setStyle("-fx-background-color: #C4DFDF; ");
         Scene scene = new Scene(borderPane, 1000, 1000);
 
-        Button back = new Button("<- Back");
-        back.setOnAction(event -> mainMenu());
-        borderPane.setBottom(back);
 
-        Button addPlaylist = new Button("Add...");
+        Button back = new Button();
+        ImageView imageView = new ImageView();
+        Image image = new Image("/images/back.png");
+        imageView.setImage(image);
+        imageView.setFitWidth(10);
+        imageView.setFitHeight(10);
+        back.setGraphic(imageView);
+        Circle shape = new Circle(180);
+        back.setShape(shape);
+        back.setTextFill(Color.WHITE);
+        back.setStyle("-fx-background-color: #667080; -fx-font-weight: bold;  ");
+        back.setOnMouseEntered(e -> {
+            back.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        back.setOnMouseExited(e -> {
+            back.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        back.setOnAction(event -> mainMenu());
+        borderPane.setTop(back);
+        //borderPane.setBottom(back);
+
+        Button addPlaylist = new Button();
+        Circle shape1 = new Circle(180);
+        addPlaylist.setShape(shape1);
+        ImageView addIcon = new ImageView();
+        Image icon1 = new Image("/images/add.png");
+        addIcon.setImage(icon1);
+        addIcon.setFitWidth(20);
+        addIcon.setFitHeight(20);
+        addPlaylist.setGraphic(addIcon);
+        addPlaylist.setTextFill(Color.WHITE);
+        addPlaylist.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; ");
+        addPlaylist.setOnMouseEntered(e -> {
+            addPlaylist.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        addPlaylist.setOnMouseExited(e -> {
+            addPlaylist.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        addPlaylist.setOnAction(e -> showAddMusicDialog());
+
+        Button deletePlaylist = new Button();
+        Circle shape2 = new Circle(180);
+        deletePlaylist.setShape(shape2);
+        ImageView deleteIcon = new ImageView();
+        Image icon2 = new Image("/images/delete.png");
+        deleteIcon.setImage(icon2);
+        deleteIcon.setFitWidth(20);
+        deleteIcon.setFitHeight(20);
+        deletePlaylist.setGraphic(deleteIcon);
+        deletePlaylist.setTextFill(Color.WHITE);
+        deletePlaylist.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; ");
+        deletePlaylist.setOnMouseEntered(e -> {
+            deletePlaylist.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        deletePlaylist.setOnMouseExited(e -> {
+            deletePlaylist.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        deletePlaylist.setOnAction(e -> {
+            // Create a ChoiceBox to select the playlist to delete
+            ChoiceBox<String> deleteChoiceBox = new ChoiceBox<>();
+            deleteChoiceBox.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+
+            // Add playlist names to the ChoiceBox
+            for (Playlist playlist : musicDB.getPlaylist()) {
+                deleteChoiceBox.getItems().add(playlist.getPlaylistName());
+            }
+
+            // Create a confirmation dialog
+            Alert confirmationDialog = new Alert(Alert.AlertType.CONFIRMATION);
+            confirmationDialog.setTitle("Delete Playlist");
+            confirmationDialog.setHeaderText("Select the playlist to delete:");
+            confirmationDialog.setGraphic(deleteChoiceBox);
+
+            // Handle the user's choice
+            Optional<ButtonType> result = confirmationDialog.showAndWait();
+            result.ifPresent(buttonType -> {
+                if (buttonType == ButtonType.OK) {
+                    String selectedPlaylistName = deleteChoiceBox.getSelectionModel().getSelectedItem();
+                    if (selectedPlaylistName != null) {
+                        // Find the selected playlist
+                        Playlist selectedPlaylist = null;
+                        for (Playlist playlist : musicDB.getPlaylist()) {
+                            if (playlist.getPlaylistName().equals(selectedPlaylistName)) {
+                                selectedPlaylist = playlist;
+                                break;
+                            }
+                        }
+                        // Delete the playlist and remove it from the ChoiceBox
+                        if (selectedPlaylist != null) {
+                            musicDB.removePlaylist(selectedPlaylist);
+                            playlistChoiceBox.getItems().remove(selectedPlaylistName);
+                        }
+                    }
+                }
+            });
+        });
+
         addPlaylist.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
             dialog.setTitle("Add Playlist");
@@ -96,11 +206,18 @@ public class Main extends Application {
                 playlistChoiceBox.getItems().add(playlistName);
             });
         });
-        playlistBox.getChildren().addAll(new Label("Select Playlist:"), playlistChoiceBox, addPlaylist);
+        Label text = new Label("Select Playlist: ");
+        text.setStyle("-fx-font-weight: bold; -fx-text-fill: #667080; -fx-font-size: 20px; -fx-stroke: white; -fx-stroke-weight: 100px;");
 
-        //agar vbox di tengah
-        playlistBox.setPadding(new Insets(10));
-        VBox.setVgrow(playlistBox, Priority.ALWAYS);
+        HBox hBox = new HBox();
+        hBox.setSpacing(10);
+        hBox.setAlignment(Pos.CENTER);
+        hBox.getChildren().addAll(playlistChoiceBox, addPlaylist);
+        playlistBox.getChildren().addAll(text, hBox, deletePlaylist);
+        stackPane.getChildren().addAll(imageView1, playlistBox);
+
+        stackPane.setPadding(new Insets(10));
+        VBox.setVgrow(stackPane, Priority.ALWAYS);
 
         mainStage.setScene(scene);
         mainStage.show();
@@ -110,7 +227,10 @@ public class Main extends Application {
         BorderPane borderPane = new BorderPane();
         HBox mediaButtons = new HBox();
         VBox rightSide = new VBox();
-        Scene scene = new Scene(borderPane, 1000, 1000);
+        Scene scene = new Scene(borderPane, 900, 900);
+        mediaButtons.setStyle("-fx-background-color: #C4DFDF; ");
+        rightSide.setStyle("-fx-background-color: #C4DFDF; ");
+        borderPane.setStyle("-fx-background-color: #C4DFDF; ");
 
         try {
             progressSlider.setMax(musicPlayer.getTotalPlayingTime());
@@ -121,19 +241,84 @@ public class Main extends Application {
         progressSlider.setValue(0);
         progressSlider.setPrefWidth(300);
 
-        Button back = new Button("<- Back");
+        Button back = new Button();
+        ImageView imageView = new ImageView();
+        Image image = new Image("/images/back.png");
+        imageView.setImage(image);
+        imageView.setFitWidth(10);
+        imageView.setFitHeight(10);
+        back.setGraphic(imageView);
+        Circle shape = new Circle(180);
+        back.setShape(shape);
+        back.setTextFill(Color.WHITE);
+        back.setStyle("-fx-background-color: #667080; -fx-font-weight: bold;  ");
+        back.setOnMouseEntered(e -> {
+            back.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        back.setOnMouseExited(e -> {
+            back.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
         back.setOnAction(event -> playListChoiceBox());
 
-        Button playPause = new Button("Play / Pause");
+        Button playPause = new Button();
+        ImageView playpos = new ImageView();
+        Image play = new Image("/images/play.png");
+        Image pause = new Image("/images/pause.png");
+        if (musicPlayer.isPlaying()) {
+            playpos.setImage(pause);
+        } else {
+            playpos.setImage(play);
+        }
+        playpos.setFitWidth(20);
+        playpos.setFitHeight(20);
+        playPause.setGraphic(playpos);
+        Circle shape1 = new Circle(180);
+        playPause.setShape(shape1);
+        playPause.setTextFill(Color.WHITE);
+        playPause.setStyle("-fx-background-color: #667080; -fx-font-weight: bold;  -fx-cursor: hand;");
         playPause.setOnAction(e -> {
+            if (musicPlayer.isPlaying()) {
+                playpos.setImage(play);
+            } else {
+                playpos.setImage(pause);
+            }
             musicPlayer.playPause();
         });
 
         Button add = new Button("Add");
+        ImageView addIcon = new ImageView();
+        Image icon1 = new Image("/images/add.png");
+        addIcon.setImage(icon1);
+        addIcon.setFitWidth(10);
+        addIcon.setFitHeight(10);
+        add.setGraphic(addIcon);
+        add.setTextFill(Color.WHITE);
+        add.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; ");
+        add.setOnMouseEntered(e -> {
+            add.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        add.setOnMouseExited(e -> {
+            add.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
         add.setOnAction(e -> {
             addToPlaylist();
         });
         Button delete = new Button("Delete");
+        ImageView deleteIcon = new ImageView();
+        Image icon2 = new Image("/images/delete.png");
+        deleteIcon.setImage(icon2);
+        deleteIcon.setFitWidth(20);
+        deleteIcon.setFitHeight(20);
+        delete.setGraphic(deleteIcon);
+        delete.setTextFill(Color.WHITE);
+        delete.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; ");
+        delete.setOnMouseEntered(e -> {
+            delete.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        delete.setOnMouseExited(e -> {
+            delete.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+
 
         //tambah music ke TableView
         playlistSongs.getColumns().clear();//clear agar tidak double
@@ -143,10 +328,6 @@ public class Main extends Application {
         column1.setCellValueFactory(cellData -> cellData.getValue().titleProperty());
         column2.setCellValueFactory(cellData -> cellData.getValue().artistNameProperty());
         column3.setCellValueFactory(cellData -> cellData.getValue().songPathProperty());
-
-        column1.setStyle("-fx-background-color: #667080;");
-        column2.setStyle("-fx-background-color: #667080;");
-        column3.setStyle("-fx-background-color: #667080;");
 
         playlistSongs.getColumns().addAll(column1, column2, column3);
         playlistSongs.setItems(selectedPlaylist.getPlaylistContent());
@@ -169,12 +350,51 @@ public class Main extends Application {
         borderPane.setBottom(mediaButtons);
         borderPane.setRight(rightSide);
 
+        Circle shapeNext = new Circle(180);
+        next.setShape(shapeNext);
+        ImageView nextIcon = new ImageView();
+        Image logo3 = new Image("/images/next.png");
+        nextIcon.setImage(logo3);
+        nextIcon.setFitWidth(10);
+        nextIcon.setFitHeight(10);
+        next.setGraphic(nextIcon);
+        next.setTextFill(Color.WHITE);
+        next.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; ");
+        next.setOnMouseEntered(e -> {
+            next.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        next.setOnMouseExited(e -> {
+            next.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+
+        Circle shapePrev = new Circle(180);
+        prev.setShape(shapePrev);
+        ImageView prevIcon = new ImageView();
+        Image logo4 = new Image("/images/previous.png");
+        prevIcon.setImage(logo4);
+        prevIcon.setFitWidth(10);
+        prevIcon.setFitHeight(10);
+        prev.setGraphic(prevIcon);
+        prev.setTextFill(Color.WHITE);
+        prev.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; ");
+        prev.setOnMouseEntered(e -> {
+            prev.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        prev.setOnMouseExited(e -> {
+            prev.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+
         mainStage.setScene(scene);
         //mainStage.setResizable(false);
         mainStage.show();
+        //mainStage.setFullScreen(true);
 
         //saat musik yang ditambahkan diklik 2x
         playlistSongs.setOnMouseClicked(event -> {
+            if (selectedMusic != null && playingFrom.getText().equals("Playing from: Music Library")) {
+                selectedMusic = null;
+            }
+
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                 if (selectedMusic == playlistSongs.getSelectionModel().getSelectedItem()) {
                     return;
@@ -229,11 +449,26 @@ public class Main extends Application {
 
     public void addToPlaylist() {
         BorderPane borderPane = new BorderPane();
-        Scene scene = new Scene(borderPane, 1000, 1000);
-        Button back = new Button("<- Back");
-        back.setOnAction(e -> {
-            playlistMenu();
+        Scene scene = new Scene(borderPane, 900, 900);
+
+        Button back = new Button();
+        ImageView imageView = new ImageView();
+        Image image = new Image("/images/back.png");
+        imageView.setImage(image);
+        imageView.setFitWidth(10);
+        imageView.setFitHeight(10);
+        back.setGraphic(imageView);
+        Circle shape = new Circle(180);
+        back.setShape(shape);
+        back.setTextFill(Color.WHITE);
+        back.setStyle("-fx-background-color: #667080; -fx-font-weight: bold;  ");
+        back.setOnMouseEntered(e -> {
+            back.setStyle("-fx-background-color: #9BABB8; -fx-font-weight: bold; -fx-cursor: hand;");
         });
+        back.setOnMouseExited(e -> {
+            back.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
+        });
+        back.setOnAction(event -> mainMenu());
 
         // Tambah music ke TableView
         libraryToPlaylist.getColumns().clear(); // Clear agar tidak double
@@ -244,14 +479,11 @@ public class Main extends Application {
         column2.setCellValueFactory(cellData -> cellData.getValue().artistNameProperty());
         column3.setCellValueFactory(cellData -> cellData.getValue().songPathProperty());
 
-        column1.setStyle("-fx-background-color: #667080;");
-        column2.setStyle("-fx-background-color: #667080;");
-        column3.setStyle("-fx-background-color: #667080;");
-
         libraryToPlaylist.getColumns().addAll(column1, column2, column3);
         libraryToPlaylist.setItems(musicDB.getMusicList());
 
         borderPane.setTop(back);
+        borderPane.setStyle("-fx-background-color: #C4DFDF; ");
         borderPane.setCenter(libraryToPlaylist);
 
         mainStage.setScene(scene);
@@ -277,7 +509,7 @@ public class Main extends Application {
         //Layout container
         Group root = new Group();
         VBox vBox = new VBox();
-        Scene scene = new Scene(root, 1000, 1000);
+        Scene scene = new Scene(root, 900, 900);
 
         //Texts and buttons
         vBox.setStyle("-fx-background-color: #C4DFDF; ");
@@ -344,7 +576,7 @@ public class Main extends Application {
 
         mainStage.setScene(scene);
         //mainStage.setResizable(false);
-        mainStage.setFullScreen(true);
+        //mainStage.setFullScreen(true);
         mainStage.show();
 
     }
@@ -353,7 +585,7 @@ public class Main extends Application {
         BorderPane borderPane = new BorderPane();
         HBox mediaButtons = new HBox();
         VBox rightSide = new VBox();
-        Scene scene = new Scene(borderPane, 1000, 1000);
+        Scene scene = new Scene(borderPane, 900, 900);
 
         try {
             progressSlider.setMax(musicPlayer.getTotalPlayingTime());
@@ -390,15 +622,24 @@ public class Main extends Application {
         ImageView playpos = new ImageView();
         Image play = new Image("/images/play.png");
         Image pause = new Image("/images/pause.png");
-        playpos.setImage(play);
+        if (musicPlayer.isPlaying()) {
+            playpos.setImage(pause);
+        } else {
+            playpos.setImage(play);
+        }
         playpos.setFitWidth(20);
         playpos.setFitHeight(20);
         playPause.setGraphic(playpos);
         Circle shape1 = new Circle(180);
         playPause.setShape(shape1);
         playPause.setTextFill(Color.WHITE);
-        playPause.setStyle("-fx-background-color: #667080; -fx-font-weight: bold;  ");
+        playPause.setStyle("-fx-background-color: #667080; -fx-font-weight: bold;  -fx-cursor: hand;");
         playPause.setOnAction(e -> {
+            if (musicPlayer.isPlaying()) {
+                playpos.setImage(play);
+            } else {
+                playpos.setImage(pause);
+            }
             musicPlayer.playPause();
         });
 
@@ -478,11 +719,6 @@ public class Main extends Application {
         column2.setCellValueFactory(cellData -> cellData.getValue().artistNameProperty());
         column3.setCellValueFactory(cellData -> cellData.getValue().songPathProperty());
 
-        column1.setStyle("-fx-background-color: #667080;");
-        //column1.setTextFill(Color.WHITE);
-        column2.setStyle("-fx-background-color: #667080;");
-        column3.setStyle("-fx-background-color: #667080;");
-
         librarySongs.getColumns().addAll(column1, column2, column3);
         librarySongs.setItems(musicDB.getMusicList());
 
@@ -506,12 +742,16 @@ public class Main extends Application {
 
         mainStage.setScene(scene);
         //mainStage.setResizable(false);
-        mainStage.setFullScreen(true);
+        //mainStage.setFullScreen(true);
         mainStage.show();
 
 
         //saat musik yang ditambahkan diklik 2x
         librarySongs.setOnMouseClicked(event -> {
+            if (selectedMusic != null && playingFrom.getText().equals("Playing from: " + selectedPlaylist.getPlaylistName())) {
+                selectedMusic = null;
+            }
+
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
                 if (selectedMusic == librarySongs.getSelectionModel().getSelectedItem()) {
                     return;
