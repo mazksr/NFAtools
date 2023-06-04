@@ -44,7 +44,5 @@ public abstract class MediaPlayerBlueprint {
     public abstract void play();
     public abstract void terminate();
     public abstract void seekPlaying(Duration duration);
-    public abstract double getTotalPlayingTime();
-    public abstract Duration getCurrentPlayingTime();
 }
 

@@ -946,6 +946,9 @@ public class Main extends Application {
                 String title = titleField.getText();
                 String artist = artistField.getText();
                 String path = pathField.getText();
+                if (titleField.getText().equals("")) {
+                    return new Music(artist, path);
+                }
                 return new Music(artist, title, path);
             }
             return null;

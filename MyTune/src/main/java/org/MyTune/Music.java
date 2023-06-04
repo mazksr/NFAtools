@@ -13,14 +13,16 @@ public class Music {
     private StringProperty songPath;
 
     public Music(String artistName, String title, String songPath) {
+        this.artistName = new SimpleStringProperty(artistName);
+        this.title = new SimpleStringProperty(title);
+        this.songPath = new SimpleStringProperty(songPath);
+    }
+
+    public Music(String artistName, String songPath) {
         File file = new File(songPath);
 
         this.artistName = new SimpleStringProperty(artistName);
-        if (title.equals("")) {
-            this.title = new SimpleStringProperty(file.getName());
-        } else {
-            this.title = new SimpleStringProperty(title);
-        }
+        this.title = new SimpleStringProperty(file.getName());
         this.songPath = new SimpleStringProperty(songPath);
     }
 
