@@ -70,7 +70,7 @@ public class Main extends Application {
             playlistChoiceBox.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
         });
 
-        playlistBox.setPrefSize(900, 900);
+        //playlistBox.setPrefSize(900, 900);
         playlistChoiceBox.setMinWidth(200);
 
         playlistBox.setAlignment(Pos.CENTER);
@@ -92,7 +92,7 @@ public class Main extends Application {
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(stackPane);
         borderPane.setStyle("-fx-background-color: #C4DFDF; ");
-        Scene scene = new Scene(borderPane, 1000, 1000);
+        Scene scene = new Scene(borderPane, 900, 900);
 
 
         Button back = new Button();
@@ -468,7 +468,7 @@ public class Main extends Application {
         back.setOnMouseExited(e -> {
             back.setStyle("-fx-background-color: #667080; -fx-font-weight: bold; -fx-cursor: hand;");
         });
-        back.setOnAction(event -> mainMenu());
+        back.setOnAction(event -> playlistMenu());
 
         // Tambah music ke TableView
         libraryToPlaylist.getColumns().clear(); // Clear agar tidak double
